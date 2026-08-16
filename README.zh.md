@@ -1,5 +1,7 @@
 # DSH Hotkeys
 
+[English](https://github.com/ctenni/dsh-hotkeys/blob/main/README.md) | **中文**
+
 DeepSeek Harness 快捷键增强插件（浏览器端 bundle 插件）。支持**发送 / 换行 / 自定义答案提交**三类热键的自定义，通过录制即可随时切换，配置保存在浏览器 `localStorage`，无需后端。
 
 ## ✨ 功能特性

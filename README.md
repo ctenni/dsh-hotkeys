@@ -1,5 +1,7 @@
 # DSH Hotkeys
 
+**English** | [中文](https://github.com/ctenni/dsh-hotkeys/blob/main/README.zh.md)
+
 Keyboard shortcut customization plugin for DeepSeek Harness (browser-side bundle plugin). Lets you record and switch the trigger keys for **send / newline / custom-answer submit**, config persisted in browser `localStorage`, no backend needed.
 
 ## ✨ Features
