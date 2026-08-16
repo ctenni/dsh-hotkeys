@@ -1,6 +1,6 @@
 {
   "name": "dsh-hotkeys",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DSH Web 热键自定义：发送 / 换行 / 自定义答案提交（可录制、可扩展）",
   "type": "module",
   "main": "lib/index.js",
