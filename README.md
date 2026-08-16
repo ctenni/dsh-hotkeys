@@ -11,20 +11,104 @@ DeepSeek Harness 快捷键增强插件（浏览器端 bundle 插件）。支持*
 - 🎨 **自定义答案增强**：DeepSeek 提问卡（`ask_user_question`）的「输入你的答案」输入框提交键可自定义，防误触提交。
 - 🛡️ **防 Enter 系泄漏**：提交键设为 `Ctrl+Enter`/`Alt+Enter` 时，另一个 Enter 组合键不会抢发消息。
 
+## 🤖 AI install（让 AI 帮你安装）
+
+现在很多用户直接让 AI 编码代理来装插件。把下面这句提示词发给你的 AI（DeepSeek / Claude 等），它会自动完成安装：
+
+> 请帮我安装 `dsh-hotkeys` 插件到 DeepSeek Harness 的 web profile：执行 `dsh plugin --profile web add dsh-hotkeys`，然后重启 `dsh web` 并强刷浏览器（Ctrl+F5），最后在消息输入框输入 `/hotkeys` 验证菜单能弹出，并在浏览器控制台执行 `window.__dshHotkeys.getBindings()` 确认返回三个绑定字段。
+
+完整的给 AI 的安装指令（含手动方式、排查、验证）见：**[AI_INSTALL.md](https://github.com/ctenni/dsh-hotkeys/blob/main/AI_INSTALL.md)**
+
 ## 📦 安装方法
 
-### 方式一：通过 npm 安装（推荐）
+### 前置条件
+
+- 已安装 [DeepSeek Harness](https://github.com/deepseek-ai/dsh)（命令行 `dsh` 可用）。
+- 已跑起来过 web profile（`dsh web`），这样 `$DSH_HOME/profiles/web` 才会存在。
+- 需要 `pnpm` 或 `npm` 包管理器。
+
+### 方式一：通过 `dsh plugin` 安装（推荐，一键）
+
+DSH 官方提供了 `dsh plugin` 命令来管理 profile 的插件，它会自动把插件加进 bundle 列表，无需手动改配置。
 
 ```powershell
-# 在 web profile 目录（如 C:\Users\Administrator\.dsh\profiles\web）下
-pnpm add dsh-hotkeys
-# 或
-npm install dsh-hotkeys
+# 在任意目录执行；--profile 指定要装到哪个 profile（web 即 web GUI）
+dsh plugin --profile web add dsh-hotkeys
 ```
 
-然后确认 `cordis.patch.yml` 里插件行 id/name 为 `dsh-hotkeys`，重启 `dsh web` 并刷新页面即可生效。
+执行完，DSH 会：
+1. 在 `~/.dsh/profiles/web` 里 `pnpm add dsh-hotkeys`（下载包 + 写入 dependencies）；
+2. **自动把 `dsh-hotkeys` 加进 `package.json` 的 `dsh.profile.bundles`**（因为它声明了 `dsh.bundle`）；
+3. 提示已初始化/安装完成。
 
-### 方式二：GitHub 仓库
+> 依赖 `pnpm`。若没装 pnpm：`npm install -g pnpm`。
+
+### 方式二：手动安装（npm/pnpm 直接装）
+
+如果不用 `dsh plugin`，也可以手动装，但**多一步：必须自己把插件加进 bundle 列表**（这是最容易漏的步骤）。
+
+**第 1 步：进入 web profile 目录**
+
+```powershell
+cd $env:USERPROFILE\.dsh\profiles\web   # Windows
+# cd ~/.dsh/profiles/web                # macOS / Linux
+```
+
+> 目录不存在？先跑一次 `dsh web` 再停掉，profile 会被创建。
+
+**第 2 步：安装包**
+
+```powershell
+pnpm add dsh-hotkeys
+# 或 npm install dsh-hotkeys
+```
+
+**第 3 步：把插件加入 bundle 列表（关键，不能省）**
+
+打开同目录 `package.json`，在 `dsh.profile.bundles` 数组里加 `"dsh-hotkeys"`：
+
+```jsonc
+{
+  "dependencies": {
+    "dsh-hotkeys": "^0.1.1"      // 第 2 步已自动写入
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-ai/dsh-web-app",
+        "dsh-hotkeys"              // ← 手动加这一行
+      ]
+    }
+  }
+}
+```
+
+> ⚠️ `pnpm add` 只下载包并写 `dependencies`，**不会自动改 `bundles` 列表**。DSH 按 `bundles` 列表加载插件，不加这行，包装了也不会生效。
+
+**第 4 步：重启生效**
+
+- 停掉正在运行的 `dsh web`（Ctrl+C 或关掉启动它的终端）。
+- 重新运行 `dsh web`。
+- 浏览器强刷（Ctrl+F5）。
+
+**第 5 步：验证**
+
+在消息输入框输入：
+
+```
+/hotkeys
+```
+
+应弹出菜单（三个预设 + 三个录制项：发送 / 换行 / 自定义答案提交）。或在浏览器控制台（F12 → Console）执行：
+
+```js
+window.__dshHotkeys.getBindings()
+```
+
+应返回 `{ send, newline, customAnswerSubmit }`。
+
+### 方式三：GitHub 仓库 + link（开发用）
 
 ```powershell
 git clone https://github.com/ctenni/dsh-hotkeys.git
@@ -38,7 +122,9 @@ git clone https://github.com/ctenni/dsh-hotkeys.git
 }
 ```
 
-> 两种方式都是 bundle 插件：**修改源码后需重启 `dsh web` 并刷新浏览器页面**才会生效（无 dev 热更）。
+同样需要执行方式二的第 3 步（把 `"dsh-hotkeys"` 加进 `bundles`）、第 4 步（重启）和第 5 步（验证）。
+
+> 三种方式都是 bundle 插件：**修改源码后需重启 `dsh web` 并刷新浏览器页面**才会生效（无 dev 热更）。
 
 ## ⚙️ 使用说明
 
