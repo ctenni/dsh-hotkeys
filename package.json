@@ -1,0 +1,48 @@
+{
+  "name": "dsh-hotkeys",
+  "version": "0.1.0",
+  "description": "DSH Web 热键自定义：发送 / 换行 / 自定义答案提交（可录制、可扩展）",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "dsh",
+    "deepseek",
+    "deepseek-harness",
+    "hotkeys",
+    "keyboard-shortcuts",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctenni/dsh-hotkeys.git"
+  },
+  "homepage": "https://github.com/ctenni/dsh-hotkeys",
+  "bugs": {
+    "url": "https://github.com/ctenni/dsh-hotkeys/issues"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime"
+      ]
+    }
+  }
+}

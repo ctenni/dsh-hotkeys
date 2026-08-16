@@ -1,0 +1,5 @@
+# dsh-hotkeys 的 bundle patch：把插件行插入所选 DSH profile 的组合。
+# 行 id 是部署本地标识；name 必须与 package.json 的 name 一致。
+- insert:
+    - id: dsh-hotkeys
+      name: dsh-hotkeys
